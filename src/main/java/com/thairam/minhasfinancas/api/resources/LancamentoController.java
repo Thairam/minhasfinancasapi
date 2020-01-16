@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.thairam.minhasfinancas.api.dto.AtualizaStatusDTO;
 import com.thairam.minhasfinancas.api.dto.LancamentoDTO;
 import com.thairam.minhasfinancas.exceptions.RegraNegocioException;
 import com.thairam.minhasfinancas.messages.LancamentoExceptionMessages;
@@ -85,6 +86,25 @@ public class LancamentoController {
 		}).orElseGet( () -> 
 			new ResponseEntity(LancamentoExceptionMessages
 					.LANCAMENTO_NAO_ENCONTRADO, HttpStatus.BAD_REQUEST));
+	}
+	
+	@PutMapping("{id}/atualiza-status")
+	public ResponseEntity atualizarStatus(@PathVariable("id") Long id, @RequestBody AtualizaStatusDTO dto) {
+		return lancamentoService.obterLancamentoPorId(id).map( lancamento -> {
+			StatusLancamento statusSelecionado = StatusLancamento.valueOf(dto.getStatus());
+			if(statusSelecionado == null) {
+				return ResponseEntity.badRequest().body(LancamentoExceptionMessages.STATUS_INVALIDO);
+			}
+			try {
+				lancamento.setStatus(statusSelecionado);
+				lancamentoService.atualizar(lancamento);
+				return ResponseEntity.ok(lancamento);				
+			} catch (Exception e) {
+				return ResponseEntity.badRequest().body(e.getMessage());
+			}
+		}).orElseGet( () -> 
+			new ResponseEntity(LancamentoExceptionMessages
+				.LANCAMENTO_NAO_ENCONTRADO, HttpStatus.BAD_REQUEST));
 	}
 	
 	@DeleteMapping("{id}")

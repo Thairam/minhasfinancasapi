@@ -9,5 +9,6 @@ public class LancamentoExceptionMessages {
 	public static final String VALOR_INVALIDO = "Informe um valor válido";
 	public static final String TIPO_INVALIDO = "Informe um tipo de lançamento";
 	public static final Object LANCAMENTO_NAO_ENCONTRADO = "Lançamento não encontrado";
+	public static final Object STATUS_INVALIDO = "Informe um status válido";
 
 }
