@@ -3,6 +3,7 @@ package com.thairam.minhasfinancas.service.impl;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiFunction;
 
 import org.springframework.data.domain.Example;
@@ -91,5 +92,10 @@ public class LancamentoServiceImpl implements LancamentoService{
 		if(lancamento.getTipo() == null) {
 			throw new RegraNegocioException(LancamentoExceptionMessages.TIPO_INVALIDO);												
 		}
+	}
+
+	@Override
+	public Optional<Lancamento> obterLancamentoPorId(Long id) {
+		return lancamentoRepository.findById(id);
 	}
 }

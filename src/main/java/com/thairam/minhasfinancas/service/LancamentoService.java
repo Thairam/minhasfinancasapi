@@ -1,6 +1,7 @@
 package com.thairam.minhasfinancas.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.thairam.minhasfinancas.model.entity.Lancamento;
 import com.thairam.minhasfinancas.model.enums.StatusLancamento;
@@ -18,4 +19,6 @@ public interface LancamentoService {
 	void atualizarStatus(Lancamento lancamento, StatusLancamento status);
 	
 	void validar(Lancamento lancamento);
+	
+	Optional<Lancamento> obterLancamentoPorId(Long id);
 }

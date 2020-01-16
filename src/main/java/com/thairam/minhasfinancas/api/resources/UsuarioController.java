@@ -12,15 +12,14 @@ import com.thairam.minhasfinancas.exceptions.RegraNegocioException;
 import com.thairam.minhasfinancas.model.entity.Usuario;
 import com.thairam.minhasfinancas.service.UsuarioService;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("api/usuarios")
+@RequiredArgsConstructor
 public class UsuarioController {	
 	
-	private UsuarioService usuarioService;
-	
-	public UsuarioController(UsuarioService service) {
-		this.usuarioService = service;
-	}
+	private final UsuarioService usuarioService;
 	
 	@PostMapping("/autenticar")
 	public ResponseEntity autenticar(@RequestBody UsuarioDTO dto) {
