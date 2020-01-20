@@ -1,5 +1,8 @@
 package com.thairam.minhasfinancas.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
@@ -40,11 +43,11 @@ public class UsuarioServiceTest {
         	Mockito.when(usuarioRepository.save(Mockito.any(Usuario.class))).thenReturn(usuario);
         	Usuario usuarioSalvo = usuarioService.salvarUsuario(usuario);
 
-        	Assertions.assertThat(usuarioSalvo).isNotNull();
-        	Assertions.assertThat(usuarioSalvo.getId()).isEqualTo(1L);
-        	Assertions.assertThat(usuarioSalvo.getNome()).isEqualTo(nome);
-        	Assertions.assertThat(usuarioSalvo.getEmail()).isEqualTo(email);
-        	Assertions.assertThat(usuarioSalvo.getSenha()).isEqualTo(senha);
+        	assertNotNull(usuarioSalvo);
+        	assertEquals(usuarioSalvo.getId(), 1L);
+        	assertEquals(usuarioSalvo.getNome(), nome);
+        	assertEquals(usuarioSalvo.getEmail(), email);
+        	assertEquals(usuarioSalvo.getSenha(), senha);
       });    	
     }
     
@@ -53,7 +56,7 @@ public class UsuarioServiceTest {
     	Usuario usuario = criarUsuarioComId();
     	Mockito.doThrow(RegraNegocioException.class).when(usuarioService).validarEmail(email);
     	Throwable exception = Assertions.catchThrowable( () -> usuarioService.salvarUsuario(usuario));
-    	Assertions.assertThat(exception).isInstanceOf(RegraNegocioException.class);
+    	assertEquals(exception.getClass(), RegraNegocioException.class);    			    			
     	Mockito.verify(usuarioRepository, Mockito.never()).save(usuario);
     }
     
@@ -62,26 +65,27 @@ public class UsuarioServiceTest {
     	Usuario usuario = criarUsuarioComId();
     	Mockito.when(usuarioRepository.findByEmail(email) ).thenReturn(Optional.of(usuario));    	
     	Usuario resultado = usuarioService.autenticar(email, senha);
-    	Assertions.assertThat(resultado).isNotNull();
+    	assertNotNull(resultado);
     }
     
     @Test
     public void deveLancarErroQuandoNaoEncontradoUsuarioCadastradoComEmailInformado() {
     	Mockito.when(usuarioRepository.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
         Throwable exception = Assertions.catchThrowable( () -> usuarioService.autenticar(email, senha) );        
-        Assertions.assertThat(exception)
-        	.isInstanceOf(ErroAutenticacao.class)
-        		.hasMessage(UsuarioExceptionMessages.USUARIO_NAO_ENCONTRADO_PARA_EMAIL);
+        assertEquals(exception.getClass(), ErroAutenticacao.class);
+        assertEquals(exception.getMessage(), UsuarioExceptionMessages.USUARIO_NAO_ENCONTRADO_PARA_EMAIL);
      }
     
     @Test
     public void deveLancarErroQuandoSenhaNaoCombinar() {
         Usuario usuario = criarUsuarioComId();
         Mockito.when(usuarioRepository.findByEmail(email) ).thenReturn(Optional.of(usuario));
+        
         Throwable exception = Assertions
-        	.catchThrowable( () -> usuarioService.autenticar(email, "senhaNaoCombina") );
-        Assertions.assertThat(exception).isInstanceOf(ErroAutenticacao.class)
-        	.hasMessage(UsuarioExceptionMessages.SENHA_INVALIDA);        
+        	.catchThrowable( () -> usuarioService.autenticar(email, "senhaNaoCombina") );      
+
+        assertEquals(exception.getClass(), ErroAutenticacao.class);
+        assertEquals(exception.getMessage(), UsuarioExceptionMessages.SENHA_INVALIDA);
      }    
     
     @Test
@@ -96,10 +100,9 @@ public class UsuarioServiceTest {
     public void deveLancarErroAoValidarEmailQuandoExistirEmailCadastrado() {
    	   	Mockito.when(usuarioRepository.existsByEmail(Mockito.anyString())).thenReturn(true);
        	Throwable exception = Assertions.catchThrowable( () -> usuarioService.validarEmail(email));        	
-       	Assertions.assertThat(exception).isInstanceOf(RegraNegocioException.class);
+        assertEquals(exception.getClass(), RegraNegocioException.class);
     }
     
-	
     private Usuario criarUsuarioComId() {
     	return Usuario.builder()
     			.nome(nome)

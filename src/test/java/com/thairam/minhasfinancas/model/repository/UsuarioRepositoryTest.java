@@ -1,8 +1,11 @@
 package com.thairam.minhasfinancas.model.repository;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Optional;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,13 +40,13 @@ public class UsuarioRepositoryTest {
 		entityManager.persist(usuario);
 		
 		boolean resultado = usuarioRepository.existsByEmail(email);
-		Assertions.assertThat(resultado).isTrue();
+		assertTrue(resultado);
 	}
 	
 	@Test
 	public void deveRetornarFalsoQuandoNaoHouverUsuarioCadastradoComOEmail() {
 		boolean resultado = usuarioRepository.existsByEmail(email);
-		Assertions.assertThat(resultado).isFalse();
+		assertFalse(resultado);
 	}
 	
 	
@@ -52,7 +55,7 @@ public class UsuarioRepositoryTest {
 		Usuario usuario = criarUsuario();
 		Usuario usuarioSalvo = usuarioRepository.save(usuario);
 		
-		Assertions.assertThat(usuarioSalvo.getId()).isNotNull();
+		assertNotNull(usuarioSalvo.getId());
 	}
 	
 	@Test
@@ -61,13 +64,13 @@ public class UsuarioRepositoryTest {
 		entityManager.persist(usuario);
 		
 		Optional<Usuario> resultado =usuarioRepository.findByEmail(email);
-		Assertions.assertThat(resultado.isPresent()).isTrue();
+		assertTrue(resultado.isPresent());
 	}
 	
 	@Test
 	public void deveRetornarVazioAoBuscarUsuarioPorEmailQuandoNaoExisteNaBase() {
 		Optional<Usuario> resultado =usuarioRepository.findByEmail(email);
-		Assertions.assertThat(resultado.isPresent()).isFalse();
+		assertFalse(resultado.isPresent());
 	}	
 
 	public Usuario criarUsuario() {
